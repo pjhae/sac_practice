@@ -118,8 +118,8 @@ for i_episode in itertools.count(1):
         state = next_state
 
     if total_numsteps > args.num_steps:
-        break
-
+        break   
+       
     writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
     if i_episode % 10 == 0:
