@@ -10,9 +10,6 @@ from replay_memory import ReplayMemory
 
 ## parser 와 train, test 및 파라미터 자동저장
 
-
-
-
 parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
 parser.add_argument('--env-name', default="HalfCheetah-v2",
                     help='Mujoco Gym environment (default: HalfCheetah-v2)')
@@ -54,9 +51,10 @@ args = parser.parse_args()
 # Environment
 # env = NormalizedActions(gym.make(args.env_name))
 env = gym.make(args.env_name)
-env.seed(args.seed)
-env.action_space.seed(args.seed)
 
+# Reproducibility를 위해 모든 랜덤 process에 동일한 seed 부여
+env.seed(args.seed)
+env.action_space.seed(args.seed)   
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
