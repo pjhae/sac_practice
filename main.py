@@ -7,6 +7,8 @@ import torch
 from sac import SAC
 from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
+from utils import VideoRecorder
+
 
 ## parser 와 train, test 및 파라미터 자동저장
 
@@ -26,8 +28,8 @@ parser.add_argument('--lr', type=float, default=0.0003, metavar='G',
 parser.add_argument('--alpha', type=float, default=0.2, metavar='G',
                     help='Temperature parameter α determines the relative importance of the entropy\
                             term against the reward (default: 0.2)')
-parser.add_argument('--automatic_entropy_tuning', type=bool, default=False, metavar='G',
-                    help='Automaically adjust α (default: False)')
+parser.add_argument('--automatic_entropy_tuning', type=bool, default=True, metavar='G',
+                    help='Automaically adjust α (default: True)')
 parser.add_argument('--seed', type=int, default=123456, metavar='N',
                     help='random seed (default: 123456)')
 parser.add_argument('--batch_size', type=int, default=256, metavar='N',
@@ -44,8 +46,8 @@ parser.add_argument('--target_update_interval', type=int, default=1, metavar='N'
                     help='Value target update per no. of updates per step (default: 1)')
 parser.add_argument('--replay_size', type=int, default=1000000, metavar='N',
                     help='size of replay buffer (default: 10000000)')
-parser.add_argument('--cuda', action="store_true",
-                    help='run on CUDA (default: False)')
+parser.add_argument('--cuda', action="store_false",
+                    help='run on CUDA (default: True)')
 args = parser.parse_args()
 
 # Environment
@@ -58,10 +60,14 @@ env.action_space.seed(args.seed)
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
+# For video
+video_directory = '/home/jonghae/sac_practice/video/{}'.format(datetime.datetime.now().strftime("%H:%M:%S %p"))
+video = VideoRecorder(dir_name = video_directory)
+
 # Agent
 agent = SAC(env.observation_space.shape[0], env.action_space, args)
 
-#Tesnorboard
+# Tesnorboard
 writer = SummaryWriter('runs/{}_SAC_{}_{}_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), args.env_name,
                                                              args.policy, "autotune" if args.automatic_entropy_tuning else ""))
 
@@ -73,6 +79,7 @@ total_numsteps = 0
 updates = 0
 
 for i_episode in itertools.count(1):
+
     episode_reward = 0
     episode_steps = 0
     done = False
@@ -103,7 +110,7 @@ for i_episode in itertools.count(1):
         episode_reward += reward
 
         # Ignore the "done" signal if it comes from hitting the time horizon.
-        # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
+        # max timestep 되었다고 done 해서 next Q = 0 되는 것 방지
         mask = 1 if episode_steps == env._max_episode_steps else float(not done)
 
         memory.push(state, action, reward, next_state, mask) # Append transition to memory
@@ -115,30 +122,39 @@ for i_episode in itertools.count(1):
 
     writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
+    if i_episode % 10 == 0:
+        agent.save_checkpoint(args.env_name,"{}".format(i_episode))
 
     if i_episode % 10 == 0 and args.eval is True:
+        video.init(enabled=True)
         avg_reward = 0.
+        avg_step = 0.
         episodes = 10
         for _  in range(episodes):
             state = env.reset()
+            episode_steps = 0
             episode_reward = 0
             done = False
             while not done:
                 action = agent.select_action(state, evaluate=True)
-
+                video.record(env.render(mode='rgb_array', camera_id=0))
                 next_state, reward, done, _ = env.step(action)
                 episode_reward += reward
-
+                episode_steps += 1
 
                 state = next_state
             avg_reward += episode_reward
+            avg_step += episode_steps
         avg_reward /= episodes
+        avg_step /= episodes
 
+        video.save('test_{}.mp4'.format(i_episode))
+        video.init(enabled=False)
 
         writer.add_scalar('avg_reward/test', avg_reward, i_episode)
 
         print("----------------------------------------")
-        print("Test Episodes: {}, Avg. Reward: {}".format(episodes, round(avg_reward, 2)))
+        print("Test Episodes: {}, Avg. Reward: {}, Avg. step: {}".format(episodes, round(avg_reward, 2), round(avg_step, 2)))
         print("----------------------------------------")
 
 env.close()

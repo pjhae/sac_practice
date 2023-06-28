@@ -101,7 +101,7 @@ class GaussianPolicy(nn.Module):
         log_prob = normal.log_prob(x_t)
         # Enforcing Action Bound
         log_prob -= torch.log(self.action_scale * (1 - y_t.pow(2)) + epsilon)
-        log_prob = log_prob.sum(1, keepdim=True)
+        log_prob = log_prob.sum(1, keepdim=True) # sum of log (prob) == log (product of prob) , 즉 해당 n차원 action이 동시에 일어날 확률
         mean = torch.tanh(mean) * self.action_scale + self.action_bias
         return action, log_prob, mean
 
