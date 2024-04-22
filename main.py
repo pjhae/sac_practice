@@ -10,9 +10,6 @@ from envs.register import register_custom_envs
 from replay_memory import ReplayMemory
 from utils import VideoRecorder
 
-
-## parser 와 train, test 및 파라미터 자동저장
-
 parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
 parser.add_argument('--env-name', default="HalfCheetah-v2",
                     help='Mujoco Gym environment (default: HalfCheetah-v2)')
@@ -55,7 +52,7 @@ args = parser.parse_args()
 register_custom_envs()
 env = gym.make(args.env_name)
 
-# Reproducibility를 위해 모든 랜덤 process에 동일한 seed 부여
+# For Reproducibility
 env.seed(args.seed)
 env.action_space.seed(args.seed)   
 torch.manual_seed(args.seed)
@@ -111,7 +108,7 @@ for i_episode in itertools.count(1):
         episode_reward += reward
 
         # Ignore the "done" signal if it comes from hitting the time horizon.
-        # max timestep 되었다고 done 해서 next Q = 0 되는 것 방지
+        # Prevent setting done = True and next Q to 0 when max timestep is reached
         mask = 1 if episode_steps == env._max_episode_steps else float(not done)
 
         memory.push(state, action, reward, next_state, mask) # Append transition to memory
