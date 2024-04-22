@@ -6,6 +6,7 @@ import itertools
 import torch
 from sac import SAC
 from torch.utils.tensorboard import SummaryWriter
+from envs.register import register_custom_envs
 from replay_memory import ReplayMemory
 from utils import VideoRecorder
 
@@ -51,7 +52,7 @@ parser.add_argument('--cuda', action="store_false",
 args = parser.parse_args()
 
 # Environment
-# env = NormalizedActions(gym.make(args.env_name))
+register_custom_envs()
 env = gym.make(args.env_name)
 
 # Reproducibility를 위해 모든 랜덤 process에 동일한 seed 부여
