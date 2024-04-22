@@ -18,7 +18,7 @@ class PointMazeEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/MAQ/envs/mujoco/assets/point_maze.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/point_maze.xml",
         terminate_when_unhealthy=True,
         reset_noise_scale=0.2,
     ):

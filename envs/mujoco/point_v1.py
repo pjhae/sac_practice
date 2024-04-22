@@ -18,7 +18,7 @@ class PointEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/metra_reproduce/envs/mujoco/assets/point.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/point.xml",
         terminate_when_unhealthy=True,
         reset_noise_scale=0.2,
     ):

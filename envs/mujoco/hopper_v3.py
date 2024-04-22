@@ -140,7 +140,7 @@ class HopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/psd/envs/mujoco/assets/hopper.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/hopper.xml",
         forward_reward_weight=1.0,
         ctrl_cost_weight=1e-3,
         healthy_reward=1.0,

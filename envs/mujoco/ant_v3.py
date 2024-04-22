@@ -172,11 +172,11 @@ class AntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/psd/envs/mujoco/assets/ant.xml", 
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/ant.xml", 
         ctrl_cost_weight=0.5,
         contact_cost_weight=5e-4,
         healthy_reward=1.0,
-        terminate_when_unhealthy=False,
+        terminate_when_unhealthy=True,
         healthy_z_range=(0.2, 1.0),
         contact_force_range=(-1.0, 1.0),
         reset_noise_scale=0.1,
@@ -245,7 +245,7 @@ class AntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         xy_position_after = self.get_body_com("torso")[:2].copy()
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
-
+        print({x_velocity})
         ctrl_cost = self.control_cost(action)
         contact_cost = self.contact_cost
 

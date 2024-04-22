@@ -145,11 +145,11 @@ class Walker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/psd/envs/mujoco/assets/walker2d.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/walker2d.xml",
         forward_reward_weight=1.0,
         ctrl_cost_weight=1e-3,
         healthy_reward=1.0,
-        terminate_when_unhealthy=False,
+        terminate_when_unhealthy=True,
         healthy_z_range=(0.8, 2.0),
         healthy_angle_range=(-1.0, 1.0),
         reset_noise_scale=5e-3,
@@ -219,6 +219,7 @@ class Walker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         x_position_after = self.sim.data.qpos[0]
         x_velocity = (x_position_after - x_position_before) / self.dt
 
+        print(x_velocity)
         ctrl_cost = self.control_cost(action)
 
         forward_reward = self._forward_reward_weight * x_velocity

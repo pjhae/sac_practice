@@ -212,13 +212,13 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/psd/envs/mujoco/assets/humanoid.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/humanoid.xml",
         forward_reward_weight=1.25,
         ctrl_cost_weight=0.1,
         contact_cost_weight=5e-7,
         contact_cost_range=(-np.inf, 10.0),
         healthy_reward=5.0,
-        terminate_when_unhealthy=False,
+        terminate_when_unhealthy=True,
         healthy_z_range=(1.0, 2.0),
         reset_noise_scale=1e-2,
         exclude_current_positions_from_observation=True,

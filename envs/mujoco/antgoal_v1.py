@@ -12,7 +12,7 @@ class AntGoalEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/MAQ/envs/mujoco/assets/ant.xml", 
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/ant.xml", 
 
         reset_noise_scale=0.1,
         exclude_current_positions_from_observation=False,

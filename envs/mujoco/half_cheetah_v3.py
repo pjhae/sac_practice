@@ -131,7 +131,7 @@ class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def __init__(
         self,
-        xml_file="/home/jonghae/psd/envs/mujoco/assets/half_cheetah.xml",
+        xml_file="/home/jonghae/sac_practice/envs/mujoco/assets/half_cheetah.xml",
         forward_reward_weight=1.0,
         ctrl_cost_weight=0.1,
         reset_noise_scale=0.1,

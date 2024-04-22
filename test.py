@@ -7,10 +7,10 @@ import torch
 from sac import SAC
 from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
+from envs.register import register_custom_envs
 
 import os
 import os.path as osp
-
 
 
 parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
@@ -52,10 +52,11 @@ parser.add_argument('--cuda', action="store_false",
 args = parser.parse_args()
 
 
-env_name = 'Point-v1'
-num_epi = 680
+env_name = 'Walker2d-v3'
+num_epi = 1780
 
 # Environment
+register_custom_envs()
 env = gym.make(env_name)
 env.seed(args.seed)
 env.action_space.seed(args.seed)

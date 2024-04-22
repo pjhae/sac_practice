@@ -1,4 +1,3 @@
-
 from gym.envs.registration import register
 
 def register_custom_envs():
